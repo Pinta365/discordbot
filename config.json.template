@@ -1,0 +1,23 @@
+{
+    "version": "0.1.0",
+
+    "bot": {
+        "token": "get your own token from https://discordapp.com/developers",
+        "playingGameText": "!carpe help",
+        "workingChannel": "carpebot",
+        "commandPrefix": "!carpe",
+        
+        "commands": {
+            "STATIC_CMD_HELP": {
+                "trigger": "help",
+                "type": "text",
+                "execute": "```Carpebot - Commands\n\n\t!carpe ping\t-\tPing Pong\n\t!carpe helloworld\t-\tHello world\n```\n"
+            },
+            "STATIC_CMD_PING": {
+                "trigger": "ping",
+                "type": "reply",
+                "execute": "pong!"
+            }
+        }
+    }
+}
