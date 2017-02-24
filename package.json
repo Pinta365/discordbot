@@ -1,6 +1,6 @@
 {
-  "name": "carpebot",
-  "version": "0.1.0",
+  "name": "discordbot",
+  "version": "0.1.1",
   "description": "Another discord bot written in nodejs.",
   "author": "pintapoff <pintapoff@GitHub>",
   "main": "index.js",
