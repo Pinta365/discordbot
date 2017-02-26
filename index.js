@@ -3,7 +3,6 @@ const Discord = require('discord.js'),
       config = require('./config.json'),
       modules = require('./modules');
 
-
 //The main function that makes it all happen.
 function main() {
 
@@ -16,49 +15,71 @@ function main() {
   }
 }
 
-
 ///////
 //This event raises when the bot reads a message in a channel.
 ////
-bot.on('message', message => {
-  //Exit if wrong channel or not our bot prefix
-  if (!message.content.startsWith(config.bot.commandPrefix) || message.channel.name != config.bot.workingChannel) return;
+bot.on('message', discordMessage => {
+  //Exit if message is caught in wrong channel or not our bot prefix
+  if (!discordMessage.content.startsWith(config.bot.commandPrefix) || discordMessage.channel.name != config.bot.workingChannel) {
+    return;
+  }
 
-  var caughtCommand = message.content.substring(config.bot.commandPrefix.length).trim();
+  var caughtString = discordMessage.content.substring(config.bot.commandPrefix.length).trim(),
+      command = caughtString.split(' ')[0],
+      botCommands = config.bot.commands;
 
   //Checking if we got the caught command configured and executes it different depending on command type.
-  for (var cmd in config.bot.commands) {
+  for (var cmd in botCommands) {
 
-    if (caughtCommand == config.bot.commands[cmd].trigger) {
+    if (botCommands[cmd].trigger == command) {
 
-      if (config.bot.commands[cmd].type == 'text') {
-        message.channel.sendMessage(config.bot.commands[cmd].execute);
+      switch (botCommands[cmd].type) {
+
+        case 'text':
+          discordMessage.channel.sendMessage(botCommands[cmd].execute);
+          break;
+
+        case 'reply':
+          discordMessage.reply(botCommands[cmd].execute);
+          break;
+
+        case 'pm':
+          //send PM, not implemented.
+          break;
+
+        case 'module':
+          //Excecute a function command for more complex commands.
+          executeModule(modules[botCommands[cmd].execute], discordMessage, caughtString);
+          break;
+
+        default:
+          console.log('Unknown command type: \'' + botCommands[cmd].type + '\'. Is the configuration right?');
+          discordMessage.reply('Unknown command type: \'' + botCommands[cmd].type + '\'.');
       }
-      else if (config.bot.commands[cmd].type == 'reply') {
-        message.reply(config.bot.commands[cmd].execute);
-      }
-      else if (config.bot.commands[cmd].type == 'pm') {
-        //send PM, not implemented.
-      }
-      else if (config.bot.commands[cmd].type == 'module') {
-        //Excecute a function command for more complex commands.
-        try {
-          modules[config.bot.commands[cmd].execute].run(message);
-        }
-        catch (e) {
-          message.reply('I failed to excecute the command \'' + caughtCommand + '\'!');
-          console.log(e);
-          return;
-        }
-      }
-      //We handled the command.
+
+      //We found the command.
       return;
     }
+
   }
-  
+
   //Command not found in config.
-  message.reply('Unknown command: \'' + caughtCommand + '\'.');
+  console.log('Unknown command: \'' + command + '\'.');
+  discordMessage.reply('Unknown command: \'' + command + '\'. Try \'' + config.bot.commandHelp + '\'');
+
 });
+
+//Executes a modules run-function along with the discordMessage object and the caught command string. 
+function executeModule(module, discordMessage, caughtString) {
+  try {
+    module.run(discordMessage, caughtString);
+  }
+  catch (e) {
+    discordMessage.reply('I failed to excecute the command \'' + discordMessage + '\'!');
+    console.log(e);
+    return;
+  }
+}
 
 ///////
 //This event raises when the bot is loaded and ready.
@@ -66,7 +87,7 @@ bot.on('message', message => {
 bot.on('ready', () => {
   console.log('Bot ready! Running on version:', config.version);
   //Setting the "Playing game:"-text that shows in discord.
-  bot.user.setGame(config.bot.playingGameText);
+  bot.user.setGame(config.bot.commandHelp);
 });
 
 //Start.

@@ -1,0 +1,9 @@
+{
+    "enabled": true,
+    "autorun": true,
+    "trigger": "simc",
+    
+    "port": 8081,
+    "rootFolder": "/www/",
+    "servingAddress": "https://gitcarpebot-artix79.c9users.io:8081/"
+}

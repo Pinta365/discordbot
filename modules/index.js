@@ -26,7 +26,7 @@ module.exports = (function() {
 				}
 				
 				if (currentModule.config.autorun){
-					currentModule.run();
+					currentModule.autorun();
 				}
 			}
 			catch (e) {
