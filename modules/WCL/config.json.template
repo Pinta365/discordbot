@@ -1,0 +1,17 @@
+{
+    "enabled": true,
+    "autorun": false,
+    "trigger": "wcl",
+
+    "api": {
+        "baseUrl":"https://www.warcraftlogs.com:443/v1/",
+        "apiKey": {
+            "public": "replace this with apikey from https://www.warcraftlogs.com/accounts/changeuser",
+            "private": "replace this with apikey from https://www.warcraftlogs.com/accounts/changeuser"
+        },
+        "baseReportUrl":"https://www.warcraftlogs.com/reports/",
+        "guildName": "carpe%20cerevisi",
+        "guildServer": "moonglade",
+        "guildRegion": "eu"
+    }
+}
